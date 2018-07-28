@@ -7,195 +7,101 @@
             canvas {
                 border: 1px black solid;
             }
+            #canvas-container {
+            display: flex;
+            /* flex:10; */
+            /* flex-direction: row; */
+            }
+
+            /* .sider-item {
+            flex: 1;
+            }
+
+            .main-item {
+            flex: 8;
+            } */
         </style>
         <!-- <script src='scene/main/ball.js'></script>
         <script src='scene/main/paddle.js'></script>
         <script src='scene/main/block.js'></script> -->
+        <script src='util.js'></script>
+        <script src='canvasLineWidth.js'></script>
+        <script src='canvasToolbar.js'></script>
+
+        <script src='cursor.js'></script>
+        <script src='rect.js'></script>
+        <script src='line.js'></script>
+        <script src='SKpaint.js'></script>
+
       
     </head>
     <body>
-        <canvas id="canvas", width="800", height="600"></canvas>
-        <input id="id-input-speed", type="range", value="30">
+            <div id="canvas-container">
+                <div class="sider-item">
+                    <div>
+
+                        <canvas id="canvasToolbar", width="100", height="400"></canvas>
+                    </div>
+                    <div>
+                        <canvas id="canvasLineWide", width="100", height="300"></canvas>
+                    </div>
+                </div >
+                <div class = 'main-item'>
+                    <canvas class = 'main-item' id="canvas", width="800", height="600"></canvas>
+
+                </div>
+            </div>
+        <!-- <input id="id-input-speed", type="range", value="30"> -->
         <!-- <div class="">
             <textarea id="id-text-log" rows="15" cols="45"></textarea>
         </div> -->
       
 
         <script>
-            var log = console.log.bind(console)
             // var log = function(){
             // }
             var es = sel => document.querySelectorAll(sel);
             var canvas = es('#canvas')[0]
+            // var canvasToolbar = es('#canvasToolbar')[0]
             var ctx = canvas.getContext('2d');
-            ctx.fillRect(0, 0, 10, 10);
-            var drawRect = function(x, y, w, h, color){
-                ctx.fillRect(x, y, w, h)
-            }
-            class SKpaint{
-                constructor(canvas){
-                    this.canvas = canvas
-                    this.imgs = []
-                }
-                add(img){
-                    this.imgs.push(img)
-                    log('add', img)
-                }
-                draw(){
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    log('addsss', this.imgs)
-                    for (var img of this.imgs){
-                        // log('fuck', img, this.imgs, )
-                        img.draw()
-                    }
-                }
-                update(){
+            // ctx.fillRect(0, 0, 10, 10);
 
-                    for (var img in this.imgs){
-                        img.update()
-                    }
-                }
-            }
-            class Cursor{
-                constructor(x, y){
-                    this.x = x 
-                    this.y = y
-                    this.lineWidth = 10
-                    this.modes = {'drawLine': this.lineCursor}
-                    this.mode = 'drawLine'
-                }
-                lineCursor(t){
-                    log('lineCursor')
-                    ctx.beginPath();
-                    ctx.fillStyle="#FF0000";
-                    var cursorLen = 20
-                    var halfCursorLen = cursorLen / 2
-                    var halfLineWidth = t.lineWidth / 2
-                    var x = t.x + halfLineWidth
-                    var y = t.y + halfLineWidth
-                    // ctx.moveTo(x, y);
-                    log(x, y, t.x, halfLineWidth, halfCursorLen)                    
-                    ctx.moveTo(x - halfCursorLen, y - halfLineWidth);
-                    ctx.lineTo(x - halfLineWidth, y - halfLineWidth);
-                    ctx.lineTo(x - halfLineWidth, y - halfCursorLen);
-                    ctx.lineTo(x + halfLineWidth, y - halfCursorLen);
-                    ctx.lineTo(x + halfLineWidth, y - halfLineWidth);
-                    ctx.lineTo(x + halfCursorLen, y - halfLineWidth);
-                    ctx.lineTo(x + halfCursorLen, y + halfLineWidth);
-                    ctx.lineTo(x + halfLineWidth, y + halfLineWidth);
-                    ctx.lineTo(x + halfLineWidth, y + halfCursorLen);
-                    ctx.lineTo(x - halfLineWidth, y + halfCursorLen);
-                    ctx.lineTo(x - halfLineWidth, y + halfLineWidth);
-                    ctx.lineTo(x - halfCursorLen, y + halfLineWidth);
-                    ctx.closePath();
-                    ctx.fill();
-                }
-                setXY(x, y){
-                    this.x = x
-                    this.y = y
-                }
-                setMode(){
+            var lineWidthConfig = [1, 1, 5, 10, 20]
+            // var drawRect = function(x, y, w, h, color){
+            //     ctx.fillRect(x, y, w, h)
+            // }
+      
 
-                }
-                draw(){
-                    var t = this
-                    this.modes[this.mode](t)
-                }
-            }
-            class Line {
-                constructor(x, y){
-                    this.x = x 
-                    this.y = y
-                    this.endx = x
-                    this.endy = y
-                }
-               
-                draw(){
-                    var mode = 0
-                    var x = this.x
-                    var y = this.y
-                    var endx = this.endx
-                    var endy = this.endy
-                    if (this.endx > this.x && this.endy > this.y) {
-                        mode = 4
-                    }
-                    else if(this.endx < this.x && this.endy < this.y){
-                        mode = 2
-                        x = this.endx
-                        y = this.endy
-                        endx = this.x
-                        endy = this.y
-                    }
-                    else if(this.endx > this.x && this.endy < this.y){
-                        mode = 1
-                    }                    
-                    else if(this.endx < this.x && this.endy > this.y){
-                        mode = 3
-                        x = this.endx
-                        y = this.endy
-                        endx = this.x
-                        endy = this.y
-                    }
-                    var lineWidth = 10
-                    ctx.beginPath();
-                    ctx.fillStyle="#FF0000";
-                    if (mode == 2 || mode == 4) {
-                        ctx.moveTo(x, y);
-                        ctx.lineTo(x + lineWidth, y);
-                        ctx.lineTo(endx + lineWidth, endy);
-                        ctx.lineTo(endx + lineWidth, endy + lineWidth);
-                        ctx.lineTo(endx, endy + lineWidth);
-                        ctx.lineTo(x, y + lineWidth);
-                    } else {
-                        ctx.moveTo(x, y);
-                        ctx.lineTo(endx, endy);
-                        ctx.lineTo(endx + lineWidth, endy);
-                        ctx.lineTo(endx + lineWidth, endy + lineWidth);
-                        ctx.lineTo(x + lineWidth, y + lineWidth);
-                        ctx.lineTo(x, y + lineWidth);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                    // log(this.x, this.y, lineWidth, this.endx, this.endy)
-                     // draws last line of the triangle
-                    // drawRect(x, y, lineWidth, lineWidth)
-                }
-                setEend(endx, endy){
-                    this.endx = endx
-                    this.endy = endy
-                }
-                update(){
-                    
-                }
-            }
             var paint = new SKpaint(canvas)
+            initCanvasLineWide(paint)
+            initCanvasToobar(paint)
             var mousedown = false
             var line = null
-            var cursor = new Cursor(0, 0)
+            var cursor = new Cursor(0, 0, canvas)
             paint.add(cursor)
+            
+
             canvas.addEventListener('mousedown', function(event){
                 mousedown = true
-                xy = getXY(event)
+                xy = getXY(event, canvas)
                 x = xy[0]
                 y = xy[1]
-                line = new Line(x, y)
+                // line = new Line(x, y, canvas)
+                line = paint.newImg(x, y, canvas)
                 paint.add(line)
                 log('mousedown',x ,y, line)
             })
-            var getXY = function(event){
-                var rect = canvas.getBoundingClientRect();
-                var x = event.clientX - rect.left;
-                var y = event.clientY - rect.top;
-                return [x, y]
-            }
             canvas.addEventListener('mouseup', function(event){
                 mousedown = false
+                if (line != null){
+                    line.setFinish()
+                }
                 line = null
                 log('mouseup')
             })
             canvas.addEventListener('mousemove', function(event){
                 if (mousedown){
-                    xy = getXY(event)
+                    xy = getXY(event, canvas)
                     x = xy[0]
                     y = xy[1]
                     line.setEend(x, y)
@@ -204,7 +110,7 @@
                     log(event)
                 }
                 log('fuckkk')
-                xy = getXY(event)
+                xy = getXY(event, canvas)
                 x = xy[0]
                 y = xy[1]
                 cursor.setXY(x, y)
@@ -220,11 +126,12 @@
             //     log('mbbb', event)
             // })
             var __main = function(){
+                paint.update()
                 paint.draw()
                 // window.setInterval(__main, 50)
-                log(213123)
+                // log(213123)
             }
-            window.setInterval(__main, 50)
+            window.setInterval(__main, 200)
             // cursor.setXY(100, 100)
             // cursor.draw()
             // line = new Line(20, 20)
