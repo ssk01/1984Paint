@@ -78,8 +78,42 @@
             var mousedown = false
             var line = null
             var cursor = new Cursor(0, 0, canvas)
-            paint.add(cursor)
-            
+            paint.addCursor(cursor)
+            // paint.add(cursor)
+            // ctx.beginPath();
+            // ctx.moveTo(50, 50)
+            // ctx.lineTo(100,100)
+            // ctx.lineTo(200,10)
+            // ctx.lineTo(400,150)
+            // ctx.lineTo(20,150)
+            // ctx.closePath()
+            // //      ctx.fillStyle = 'red';
+            // // ctx.fill()
+            // ctx.stroke();
+            // var maxY = 150
+            // var minY = 10
+            // // data = ctx.getImageData(200, 30, 1, 1).data;
+            // // log (data);
+                   
+            // for (var y = 110; y <= maxY; y++){
+            //     for (var x = 10 ; x < 400; x++){
+            //         data = ctx.getImageData(x, y, 1, 1).data;
+            //         log( [data[0], data[1], data[2], data[3]]);
+            //         if (data[4]==255){
+            //             log('2432')
+            //         }
+            //         if (data == [0,0,0,255]){
+            //             log(x, y)
+            //         }
+            //         // log(color)
+            //     }
+            //     ctx.beginPath();
+            //     ctx.moveTo(10, 110)
+            //     ctx.lineTo(400, 110)
+            //     ctx.stroke();
+
+            //     break
+            // }
 
             canvas.addEventListener('mousedown', function(event){
                 mousedown = true
@@ -88,14 +122,16 @@
                 y = xy[1]
                 // line = new Line(x, y, canvas)
                 line = paint.newImg(x, y, canvas)
-                paint.add(line)
+                // paint.add(line)
                 log('mousedown',x ,y, line)
             })
             canvas.addEventListener('mouseup', function(event){
                 mousedown = false
                 if (line != null){
                     line.setFinish()
+                    paint.end()
                 }
+                
                 line = null
                 log('mouseup')
             })
@@ -115,23 +151,32 @@
                 y = xy[1]
                 cursor.setXY(x, y)
             })
-            // canvas.addEventListener('mouseover', function(event){
-            //     xy = getXY(event)
-            //     x = xy[0]
-            //     y = xy[1]
-            //     cursor.setXY(x, y)
-            //     // line.setEend(x, y)
-            //     // console.log("x: " + x + " y: " + y);
-            //     // drawLine(x, y)
-            //     log('mbbb', event)
-            // })
+         
             var __main = function(){
                 paint.update()
                 paint.draw()
                 // window.setInterval(__main, 50)
                 // log(213123)
             }
-            window.setInterval(__main, 200)
+            window.setInterval(__main, 50)
+
+
+
+            // syntax test
+        // var vecs = []
+        // for (var b =0; b < 3; b++){
+        //     for (var a = 3; a <=5; a++){
+        //         var vec = []
+        //         // log('this.newBuffer', ((b-y)*width+a-x)*4+3, this.newBuffer[0], this.newBuffer.data[((b-y)*width+a-x)*4+3])
+        //         vec.push(a-x)
+        //         // if ( != [0, 0, 0, 0]) {
+        //         // }
+        //     }
+        //     // return
+        //     vecs.push(vec)
+        // }
+
+
             // cursor.setXY(100, 100)
             // cursor.draw()
             // line = new Line(20, 20)
@@ -141,9 +186,19 @@
         </script>   
 
 <script>
-
+   // canvas.addEventListener('mouseover', function(event){
+            //     xy = getXY(event)
+            //     x = xy[0]
+            //     y = xy[1]
+            //     cursor.setXY(x, y)
+            //     // line.setEend(x, y)
+            //     // console.log("x: " + x + " y: " + y);
+            //     // drawLine(x, y)
+            //     log('mbbb', event)
+            // })
 
 </script>   
 
     </body>
 </html>
+
