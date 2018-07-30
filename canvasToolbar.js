@@ -13,19 +13,37 @@ var initCanvasToobar = function(paint){
         ctx.strokeRect(0, i * barh, barw, barh)
         ctx.strokeRect(barw, i * barh, barw, barh)
     } 
-    var canvasToolbarConfig = [['drawLine', 'drawRect']]
- 
+    var canvasToolbarConfig = [
+        ['drawLine', 'eraser'],
+        ['drawRect', 'fillRect'],
+    ]
+    var eraser = function(x, y, click){
+
+    }
     var drawRect = function(x, y, click){
         if (click){
             ctx.fillStyle = 'black';
             ctx.fillRect(x * barw, y * barh, barw, barh)
             ctx.strokeStyle = 'white';
-            ctx.strokeRect( x*barw+10, y*barw+10, barw-20, barh-20);
+            ctx.strokeRect( x*barw+10, y*barh+10, barw-20, barh-20);
         } else {
             ctx.fillStyle = 'white';
-            ctx.fillRect(x * barw, y * barh, barw, barh)
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
             ctx.strokeStyle = 'black';
-            ctx.strokeRect( x*barw+10, y*barw+10, barw-20, barh-20);
+            ctx.strokeRect( x*barw+10, y*barh+10, barw-20, barh-20);
+        }
+    }
+    var fillRect = function(x, y, click){
+        if (click){
+            ctx.fillStyle = 'black';
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
+            ctx.fillStyle = 'blue';
+            ctx.fillRect( x*barw+10, y*barh+10, barw-20, barh-20);
+        }else{
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
+            ctx.fillStyle = 'blue';
+            ctx.fillRect( x*barw+10, y*barh+10, barw-20, barh-20);
         }
     }
     var drawLine = function(x, y, click){
@@ -54,9 +72,12 @@ var initCanvasToobar = function(paint){
     var canvasToolbarDraw = {
         'drawLine': drawLine,
         'drawRect': drawRect,
+        'fillRect': fillRect,
+        'eraser': eraser,
     }
     drawLine(0, 0, true)
-    drawRect(1, 0, false)
+    drawRect(0, 1, false)
+    fillRect(1, 1, false)
     var oldmode = 'drawLine'
     var oldxIdx = 0
     var oldyIdx = 0

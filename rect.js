@@ -1,5 +1,5 @@
 class Rect {
-    constructor(x, y, canvas){
+    constructor(x, y, canvas, fill){
         this.x = x 
         this.y = y
         this.endx = x
@@ -10,12 +10,17 @@ class Rect {
         this.canvas = canvas
         this.buffer = null
         this.ctx = canvas.getContext('2d');
+        this.fill = fill
+        this.texturedata = null
+        this.texturew = null
+        this.textureh = null
     }
     setFinish(){
         this.finish = true
     }
     storeOldBuffer(x, y, width, height){
         // this.oldbuffer = 
+        log(x, y, width, height)
         log('old', this.buffer,this.ctx.getImageData(x, y, width, height))
         this.buffer = this.ctx.getImageData(x, y, width, height)
         log('th', this.buffer)
@@ -23,8 +28,21 @@ class Rect {
     }
     drawline(buffer ,width,  y, x1, x2){
         for(var i = x1+1; i<x2;i++){
-            buffer.data[(width*y+i)*4+3] = 255
-            buffer.data[(width*y+i)*4+2] = 255
+            var texturey =  y % this.textureh 
+            var texturex = i % this.texturew
+            // if (i%10 == 1  || i%10 == 2){
+                buffer.data[(width*y+i)*4+3] = this.texturedata[(texturey* this.texturew + texturex)*4 +3]
+                buffer.data[(width*y+i)*4+2] = this.texturedata[(texturey* this.texturew + texturex)*4 +2]
+                buffer.data[(width*y+i)*4+1] = this.texturedata[(texturey* this.texturew + texturex)*4 +1]
+                buffer.data[(width*y+i)*4+0] = this.texturedata[(texturey* this.texturew + texturex)*4 +0]
+                // buffer.data[(width*y+i)*4+2] = 255
+                // log('ddddd')
+            // } else {
+            //     buffer.data[(width*y+i)*4+3] = 255
+            //     buffer.data[(width*y+i)*4+2] = 255
+            //     buffer.data[(width*y+i)*4+1] = 255
+            //     buffer.data[(width*y+i)*4+0] = 255
+            // }
         }
     }
     draw(){
@@ -33,74 +51,83 @@ class Rect {
         ctx.strokeStyle = 'lightblue';
         ctx.fillStyle = 'lightblue';
         
-        var x = this.x
-        var y = this.y
-        var endx = this.endx
-        var endy = this.endy
+        var x = Math.min( this.x, this.endx)
+        var y = Math.min( this.y, this.endy)
+        var endx = Math.max( this.x, this.endx)
+        var endy = Math.max( this.y, this.endy)
         if (endx == x){
             return
         }
         if (endy == y) {
             return
         }
-        var width =endx-x
-        this.storeOldBuffer(x, y, endx-x, endy-y)
-        // ctx.strokeRect(x, y, endx-x, endy-y)
-        ctx.beginPath();
-        // ctx.setLineDash([3, 10]);
-        ctx.moveTo(x, y);
-        ctx.lineTo(endx, endy);
-        ctx.lineTo((endx +x)/2, (y+ endy)/2+20)
-        ctx.closePath()
-        ctx.stroke();
-        this.newBuffer = this.ctx.getImageData(x, y, endx-x, endy-y)
-        var vecs = []
-        for (var b =y+1; b < endy-1; b++){
-            var vec = []
-            for (var a = x; a <=endx; a++){
-                // log('this.newBuffer', ((b-y)*width+a-x)*4+3, this.newBuffer[0], this.newBuffer.data[((b-y)*width+a-x)*4+3])
-                if (this.newBuffer.data[((b-y)*width+a-x)*4+3] != 0){
-                    vec.push(a-x)
-                    // log('foooo',a-x)
+        if (this.lineWidth * 2 >= Math.min( endx - x , endy -y)){
+            ctx.fillStyle = 'black'
+            ctx.fillRect(x, y, endx - x, endy -y)
+        } else {
+            var innerx = x + this.lineWidth
+            var innery = y + this.lineWidth
+            var innerw = endx -x -2*this.lineWidth
+            var innerh = endy -y -2*this.lineWidth
+            this.storeOldBuffer(innerx, innery, innerw+1, innerh)
+            ctx.fillStyle = 'black'
+            ctx.fillRect(x, y, endx - x, endy -y)
+            ctx.fillStyle = 'white'
+            ctx.fillRect(innerx+1, innery, innerw-1, innerh)
+            if (this.fill){
+                this.newBuffer = this.ctx.getImageData(innerx, innery, innerw+1, innerh)
+                log('fffck',this.newBuffer.data)
+                var vecs = []
+                for (var b = 0; b < innerh; b++){
+                    var vec = []
+                    for (var a = 0; a <=innerw; a++){
+                        // log('this.newBuffer', ((b-y)*width+a-x)*4+3, this.newBuffer[0], this.newBuffer.data[((b-y)*width+a-x)*4+3])
+                        if (this.newBuffer.data[(b*(innerw+1)+a)*4+1]  != 255){
+                            vec.push(a)
+                            // log('foooo',a-x)
+                        }
+                        // if ( != [0, 0, 0, 0]) {
+                        // }
+                    }
+                    // return
+                    vecs.push(vec)
                 }
-                // if ( != [0, 0, 0, 0]) {
+                var b = 1
+                log('vecs', vecs, x, y, endx, endy, 'fff',innerx, innery, innerw, innerh)// vecs.length,x, y, width, endy-y, this.newBuffer)
+                for (var vec of vecs){
+
+                    this.drawline(this.buffer,innerw+1, b, vec[0], vec[vec.length-1] )
+                    // for (var a of vec) {
+                    // }
+                    b++
+                }
+                // log('length', this.buffer.data.length,this.buffer,this.buffer[1], this.buffer.length)
+                // var data = this.newBuffer.data
+                // for (var i = 0; i < data.length;i+=4){
+                //     if (data[i] | data[i+1] | data[i+2]){
+                //         this.buffer.data[i] = data[i]
+                //         this.buffer.data[i+1] = data[i+1]
+                //         this.buffer.data[i+2] = data[i+2]
+                //         this.buffer.data[i+3] = data[i+3]
+                //     }
                 // }
             }
-            // return
-            vecs.push(vec)
+            this.ctx.putImageData(this.buffer, innerx, innery)
         }
-        var b = 1
-        log('vecs', vecs, vecs.length,x, y, width, endy-y, this.newBuffer)
-        for (var vec of vecs){
-
-            this.drawline(this.newBuffer, b, width, vec[0], vec[vec.length-1] )
-            // for (var a of vec) {
-            // }
-            b++
-        }
-        log('length', this.buffer.data.length)
-        for (var i = 0; i < this.buffer.data.length;i++){
-            if (this.newBuffer.data[i] != 0){
-                this.buffer.data[i] = this.newBuffer.data[i]
-            }
-        }
-        this.ctx.putImageData(this.buffer, x, y)
-        // this.ctx.putImageData(this.newBuffer, x, y)
-
-        // log(this.x, this.y, lineWidth, this.endx, this.endy)
-         // draws last line of the triangle
-        // drawRect(x, y, lineWidth, lineWidth)
     }
     setEend(endx, endy){
         this.endx = endx
         this.endy = endy
     }
         
-    update(lineWidthMode, lineWidth){
+    update(lineWidthMode, lineWidth, texturedata, texturew, textureh){
         if (this.finish){
             return
         }
         this.lineWidthMode = lineWidthMode
         this.lineWidth = lineWidth
+        this.texturedata = texturedata
+        this.texturew = texturew
+        this.textureh = textureh
     }
 }

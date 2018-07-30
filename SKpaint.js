@@ -10,6 +10,9 @@ class SKpaint{
         this.lineWidthMode = 4
         this.updateBuffer = false
         this.cursor = null
+        this.texturedata = null
+        this.texturew = null
+        this.textureh = null
     }
     addCursor(img){
         this.cursor = img
@@ -20,6 +23,12 @@ class SKpaint{
         this.updateBuffer = false
         log('add', img)
     }
+    changeTexture(texturebuffer, w, h){
+        this.texturedata = texturebuffer.data 
+        log(this.texturedata, '2342')
+        this.texturew = w
+        this.textureh = h
+    }
     end(){
         this.updateBuffer = true
     }
@@ -28,9 +37,10 @@ class SKpaint{
         if (this.toobarMode == 'drawLine'){
             img = new Line(x, y, canvas)
             this.add(img)
-        } else{
-            img = new Rect(x, y, canvas)
-
+        } else if (this.toobarMode == 'drawRect'){
+            img = new Rect(x, y, canvas, false)
+        } else if (this.toobarMode == 'fillRect'){
+            img = new Rect(x, y, canvas, true)
         }
         this.add(img)
         return img
@@ -63,7 +73,7 @@ class SKpaint{
     }
     update(){
         if (this.curImg != null){
-            this.curImg.update(this.lineWidthMode, this.lineWidth)
+            this.curImg.update(this.lineWidthMode, this.lineWidth, this.texturedata, this.texturew, this.textureh)
         }
         // else {
         //     if (!this.updateBuffer){
