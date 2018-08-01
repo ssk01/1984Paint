@@ -13,10 +13,7 @@ var initCanvasToobar = function(paint){
         ctx.strokeRect(0, i * barh, barw, barh)
         ctx.strokeRect(barw, i * barh, barw, barh)
     } 
-    var canvasToolbarConfig = [
-        ['drawLine', 'eraser'],
-        ['drawRect', 'fillRect'],
-    ]
+
     var eraser = function(x, y, click){
 
     }
@@ -69,15 +66,50 @@ var initCanvasToobar = function(paint){
             // ctx.drawLine(+, y * barh,)
         }
     }
+    var linePolygon = function(x, y, click){
+        if (click) {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
+            ctx.strokeStyle = 'lightblue';
+            ctx.fillRect( x*barw+10, y*barh+10, barw-20, barh-20);
+        } else {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
+            ctx.strokeStyle = 'lightblue';
+            ctx.strokeRect( x*barw+10, y*barh+10, barw-20, barh-20);
+        }
+    }
+    var fillLinePolygon = function(x, y, click){
+        if (click) {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
+            ctx.strokeStyle = 'lightblue';
+            ctx.fillRect( x*barw+10, y*barh+10, barw-20, barh-20);
+        } else {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
+            ctx.strokeStyle = 'lightblue';
+            ctx.strokeRect( x*barw+10, y*barh+10, barw-20, barh-20);
+        }
+    }
     var canvasToolbarDraw = {
         'drawLine': drawLine,
         'drawRect': drawRect,
         'fillRect': fillRect,
         'eraser': eraser,
+        'linePolygon': linePolygon,
+        'fillLinePolygon':fillLinePolygon,
     }
+    var canvasToolbarConfig = [
+        ['drawLine', 'eraser'],
+        ['drawRect', 'fillRect'],
+        ['linePolygon', 'fillLinePolygon'],
+    ]
     drawLine(0, 0, true)
     drawRect(0, 1, false)
     fillRect(1, 1, false)
+    linePolygon(0, 2, false)
+    fillLinePolygon(1, 2, false)
     var oldmode = 'drawLine'
     var oldxIdx = 0
     var oldyIdx = 0

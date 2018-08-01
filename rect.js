@@ -1,22 +1,25 @@
 class Rect {
-    constructor(x, y, canvas, fill){
+    constructor(x, y, canvas,  lineWidthMode, lineWidth, texturedata, texturew, textureh, fill){
         this.x = x 
         this.y = y
         this.endx = x
         this.endy = y
-        this.lineWidthMode = 4
-        this.lineWidthMode = 20
+        this.lineWidthMode = lineWidthMode
+        this.lineWidth = lineWidth
         this.finish = false
         this.canvas = canvas
         this.buffer = null
         this.ctx = canvas.getContext('2d');
         this.fill = fill
-        this.texturedata = null
-        this.texturew = null
-        this.textureh = null
+        this.texturedata = texturedata
+        this.texturew = texturew
+        this.textureh = textureh
     }
     setFinish(){
         this.finish = true
+    }
+    end(){
+        
     }
     storeOldBuffer(x, y, width, height){
         // this.oldbuffer = 

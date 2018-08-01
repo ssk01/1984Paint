@@ -23,24 +23,32 @@ class SKpaint{
         this.updateBuffer = false
         log('add', img)
     }
-    changeTexture(texturebuffer, w, h){
+    setTexture(texturebuffer, w, h){
+        this.end()
         this.texturedata = texturebuffer.data 
         log(this.texturedata, '2342')
         this.texturew = w
         this.textureh = h
     }
     end(){
-        this.updateBuffer = true
+        if (this.curImg != null){
+            this.curImg.end()
+            this.updateBuffer = true
+        }
     }
     newImg(x, y, canvas){
         var img = null;
         if (this.toobarMode == 'drawLine'){
-            img = new Line(x, y, canvas)
-            this.add(img)
+            img = new Line(x, y, canvas, this.lineWidthMode, this.lineWidth)
         } else if (this.toobarMode == 'drawRect'){
-            img = new Rect(x, y, canvas, false)
+            img = new Rect(x, y, canvas, this.lineWidthMode, this.lineWidth,  this.texturedata, this.texturew, this.textureh,false)
         } else if (this.toobarMode == 'fillRect'){
-            img = new Rect(x, y, canvas, true)
+            img = new Rect(x, y, canvas, this.lineWidthMode, this.lineWidth,  this.texturedata, this.texturew, this.textureh,true)
+        } else if (this.toobarMode == 'linePolygon'){
+            img = new LinePolygon(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, false)
+        }
+        else if (this.toobarMode == 'fillLinePolygon'){
+            img = new LinePolygon(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, true)
         }
         this.add(img)
         return img
@@ -64,17 +72,20 @@ class SKpaint{
         //     img.draw()
         // }
     }
+
     setToolBar(toobarMode){
+        this.end()
         this.toobarMode = toobarMode
     }
     setLineWidthMode(level){
+        this.end()
         this.lineWidthMode = level
         this.lineWidth = lineWidthConfig[level]
     }
     update(){
-        if (this.curImg != null){
-            this.curImg.update(this.lineWidthMode, this.lineWidth, this.texturedata, this.texturew, this.textureh)
-        }
+        // if (this.curImg != null){
+        //     this.curImg.update(this.lineWidthMode, this.lineWidth, this.texturedata, this.texturew, this.textureh)
+        // }
         // else {
         //     if (!this.updateBuffer){
         //         this.buffer = this.ctx.getImageData(0, 0, canvas.width, canvas.height)

@@ -1,17 +1,17 @@
 class Line {
-    constructor(x, y, canvas){
+    constructor(x, y, canvas, lineWidthMode, lineWidth){
         this.x = x 
         this.y = y
         this.endx = x
         this.endy = y
-        this.lineWidthMode = 4
-        this.lineWidthMode = 20
+        this.lineWidthMode = lineWidthMode
+        this.lineWidth = lineWidth
         this.finish = false
         this.canvas = canvas
         this.ctx = canvas.getContext('2d');
     }
-    setFinish(){
-        this.finish = true
+    end(){
+        // this.finish = true
     }
     draw(){
         var ctx = this.ctx
@@ -36,6 +36,11 @@ class Line {
         var y = this.y
         var endx = this.endx
         var endy = this.endy
+        // log('draw line ',ctx ,x,y, endx, endy, this.lineWidth)
+        ctx.fillStyle = 'black';
+
+        // ctx.fillRect(x,y,endx - x,endy -y)
+        // return
         if (this.endx > this.x && this.endy > this.y) {
             mode = 4
         }
@@ -85,10 +90,10 @@ class Line {
     }
         
     update(lineWidthMode, lineWidth){
-        if (this.finish){
-            return
-        }
-        this.lineWidthMode = lineWidthMode
-        this.lineWidth = lineWidth
+        // if (this.finish){
+        //     return
+        // }
+        // this.lineWidthMode = lineWidthMode
+        // this.lineWidth = lineWidth
     }
 }
