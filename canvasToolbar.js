@@ -92,6 +92,9 @@ var initCanvasToobar = function(paint){
             ctx.strokeRect( x*barw+10, y*barh+10, barw-20, barh-20);
         }
     }
+    var selectRect = function(x, y ,click){
+        
+    }
     var canvasToolbarDraw = {
         'drawLine': drawLine,
         'drawRect': drawRect,
@@ -99,17 +102,20 @@ var initCanvasToobar = function(paint){
         'eraser': eraser,
         'linePolygon': linePolygon,
         'fillLinePolygon':fillLinePolygon,
+        'selectRect': selectRect,
     }
     var canvasToolbarConfig = [
         ['drawLine', 'eraser'],
         ['drawRect', 'fillRect'],
         ['linePolygon', 'fillLinePolygon'],
+        ['selectRect'],
     ]
     drawLine(0, 0, true)
     drawRect(0, 1, false)
     fillRect(1, 1, false)
     linePolygon(0, 2, false)
     fillLinePolygon(1, 2, false)
+    selectRect(0, 3, false)
     var oldmode = 'drawLine'
     var oldxIdx = 0
     var oldyIdx = 0

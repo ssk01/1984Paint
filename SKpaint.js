@@ -46,9 +46,10 @@ class SKpaint{
             img = new Rect(x, y, canvas, this.lineWidthMode, this.lineWidth,  this.texturedata, this.texturew, this.textureh,true)
         } else if (this.toobarMode == 'linePolygon'){
             img = new LinePolygon(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, false)
-        }
-        else if (this.toobarMode == 'fillLinePolygon'){
+        } else if (this.toobarMode == 'fillLinePolygon'){
             img = new LinePolygon(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, true)
+        } else if (this.toobarMode == 'selectRect'){
+            img = new SelectRect(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, true)
         }
         this.add(img)
         return img
@@ -82,6 +83,7 @@ class SKpaint{
         this.lineWidthMode = level
         this.lineWidth = lineWidthConfig[level]
     }
+    
     update(){
         // if (this.curImg != null){
         //     this.curImg.update(this.lineWidthMode, this.lineWidth, this.texturedata, this.texturew, this.textureh)

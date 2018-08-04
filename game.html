@@ -32,7 +32,11 @@
         <script src='cursor.js'></script>
         <script src='rect.js'></script>
         <script src='line.js'></script>
+        
         <script src='linePolygon.js'></script>  
+        <script src='selectRect.js'></script>  
+        
+
         <script src='SKpaint.js'></script>
         <script src='texture.js'></script>
 
@@ -84,15 +88,28 @@
             var cursor = new Cursor(0, 0, canvas)
             paint.addCursor(cursor)
             canvas.addEventListener('mousedown', function(event){
+                log('down ')
                 mousedown = true
                 xy = getXY(event, canvas)
                 x = xy[0]
                 y = xy[1]
                 if (paint.curImg instanceof LinePolygon){
-                    paint.curImg.setNewStart(x, y)
+                    log('line poly click')
+                    if (paint.curImg.setNewStart(x, y)){
+                        log('start fuck')
+                        paint.end()
+                    }
                     return 
                 }
+                if (paint.curImg instanceof SelectRect){
+                    if (paint.curImg.startMove(x,y)){
+                        log('fucccc')
+                        paint.end()
+                    }
+                    return
+                }
                 // line = new Line(x, y, canvas)
+                log('new img')
                 paint.newImg(x, y, canvas)
                 // paint.add(line)
                 // log('mousedown',x ,y, line)
@@ -100,10 +117,17 @@
             canvas.addEventListener('mouseup', function(event){
 
                 mousedown = false
+                log('mouse up')
                 if (paint.curImg instanceof LinePolygon){
+                    log('line poly up')
                     return 
                 }
-
+                if (paint.curImg instanceof SelectRect){
+                    // return
+                    log('upup')
+                    paint.curImg.setNextMoveStart(x, y)
+                    return
+                }
                 if (paint.curImg != null){
                     // line.setFinish()
                     paint.end()
@@ -112,6 +136,8 @@
                 // log('mouseup')
             })
             canvas.addEventListener('mousemove', function(event){
+                log('move')
+        
                 if (paint.curImg    instanceof LinePolygon){
                     xy = getXY(event, canvas)
                     x = xy[0]
@@ -122,6 +148,12 @@
                     // return
                 }
                 if (mousedown){
+                    // if (paint.curImg instanceof SelectRect){
+                    //     paint.curImg.setEend(x, y)
+                    // }
+                    if(paint.curImg == null){
+                        return
+                    }
                     xy = getXY(event, canvas)
                     x = xy[0]
                     y = xy[1]
@@ -129,7 +161,8 @@
                     // console.log("x: " + x + " y: " + y);
                     // drawLine(x, y)
                     // log(event)
-                }
+                } 
+
                 // log('fuckkk')
                 xy = getXY(event, canvas)
                 x = xy[0]
@@ -171,7 +204,7 @@
             var linePoly = new LinePolygon(1, 1, canvas)
             log(typeof(linePoly))
             log( linePoly instanceof LinePolygon)
-
+            // paint.add(new SelectRect(0,0,canvas, 0,0,0,0,0))
 
 // function readTextFile(file, callback) {
 //     var rawFile = new XMLHttpRequest();

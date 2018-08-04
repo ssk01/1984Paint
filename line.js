@@ -14,7 +14,7 @@ class Line {
         // this.finish = true
     }
     draw(){
-        var ctx = this.ctx
+        var ctx = this.ctx  
         // ctx.strokeStyle = '0xff0000'
         ctx.strokeStyle = 'lightblue';
         ctx.fillStyle = 'lightblue';
@@ -32,7 +32,7 @@ class Line {
         }
         // mode 对应x,y为原点 endx，endy所在正常二维坐标系的象限。
         var mode = 0
-        var x = this.x
+        var x = this.x 
         var y = this.y
         var endx = this.endx
         var endy = this.endy
@@ -93,7 +93,7 @@ class Line {
         // if (this.finish){
         //     return
         // }
-        // this.lineWidthMode = lineWidthMode
-        // this.lineWidth = lineWidth
+        this.lineWidthMode = lineWidthMode
+        this.lineWidth = lineWidth
     }
 }

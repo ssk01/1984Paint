@@ -20,3 +20,14 @@ var getXY = function(event, canvas){
 
     return [x, y]
 }
+var  getRect = function(x, y, endx, endy){
+    var rec = []
+    rec[0] = Math.min(x, endx)
+    rec[1] = Math.min(y, endy)
+    rec[2] = Math.max(x, endx)
+    rec[3] = Math.max(y, endy)
+    return rec
+}
+var pointInRect = function(x, y, x1, y1, w, h){
+    return (x > x1 && x < x1+w && y > y1 && y < y1+h)
+}

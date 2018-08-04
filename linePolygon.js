@@ -50,13 +50,14 @@ class LinePolygon {
         }
         var innerx = this.minx
         var innery = this.miny
-        var innerw  =this.maxx - this.minx
-        var innerh = this.maxy- this.miny
+        var innerw  =this.maxx - this.minx - this.lineWidth
+        var innerh = this.maxy- this.miny - this.lineWidth
         this.storeOldBuffer(this.minx, this.miny, innerw+1, innerh)
         ctx.fillStyle = 'white'
         log('inner ', innerx, innery, innerw,innerh)
         ctx.fillRect(innerx, innery, innerw+1, innerh)
         for (var l of this.lines){
+            l.update(1, 1)
             l.draw()
             // log(l , 'poly draw')
         }
@@ -65,9 +66,21 @@ class LinePolygon {
         var vecs = []
         for (var b = 0; b < innerh; b++){
             var vec = []
+            var last = false
             for (var a = 0; a <=innerw; a++){
-                if (this.newBuffer.data[(b*(innerw+1)+a)*4+1]  != 255){
-                    vec.push(a)
+                var intersect = (this.newBuffer.data[(b*(innerw+1)+a)*4+1]  != 255)
+                if (last ){
+                    if (intersect){
+                        continue
+                    } else{
+                        last = false
+                    }
+                }
+                else{
+                    if (intersect){
+                        vec.push(a)
+                        last = true
+                    }
                     // log('foooo',a-x)
                 }
             }
@@ -76,8 +89,11 @@ class LinePolygon {
         var b = 1
         log('vecs', vecs,  'fff',innerx, innery, innerw, innerh)// vecs.length,x, y, width, endy-y, this.newBuffer)
         for (var vec of vecs){
-            log(vec[0],vec[vec.length-1])
-            this.drawline(this.buffer,innerw+1, b, vec[0], vec[vec.length-1] )
+            // log(vec[0],vec[vec.length-1])
+            var length = Math.floor(vec.length / 2)*2
+            for(var i = 0; i < length; i+=2){
+                this.drawline(this.buffer,innerw+1, b, vec[i], vec[i+1] )
+            }
             b++
         }
        
@@ -102,6 +118,11 @@ class LinePolygon {
     }
     setNewStart(startx, starty){
         log('set new start')
+        if (Math.abs(startx - this.initx)<= this.lineWidth+5 && Math.abs(starty -this.inity)<= this.lineWidth+5){
+            // this.end()
+            log('set end ok')
+            return 1
+        }
         this.x = startx
         this.y = starty
         this.minx = Math.min(this.minx, this.x)
@@ -115,7 +136,7 @@ class LinePolygon {
         log(this.line, 'line poly')
 
         this.lines.push(this.line)
-
+        return 0
     }
     // draw1(){
     //     this.line.draw()
@@ -125,6 +146,7 @@ class LinePolygon {
             this.fillIn()
         }
                     for (var l of this.lines){
+                        l.update(this.lineWidthMode, this.lineWidth)
                         l.draw()
                         // log(l , 'poly draw')
                     }
