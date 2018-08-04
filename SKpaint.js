@@ -50,8 +50,13 @@ class SKpaint{
             img = new LinePolygon(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, true)
         } else if (this.toobarMode == 'selectRect'){
             img = new SelectRect(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, true)
+        } else if (this.toobarMode == 'drawPencil'){
+            img = new Pencil(x, y, canvas, this.lineWidthMode, this.lineWidth)
+        } else if (this.toobarMode == 'brush') {
+            img = new Brush(x, y, canvas, this.lineWidthMode, this.lineWidth,this.texturedata, this.texturew, this.textureh, true)
         }
         this.add(img)
+        log('new ', this.toobarMode, img)
         return img
     }
     draw(){

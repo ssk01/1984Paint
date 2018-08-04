@@ -23,7 +23,7 @@ class Texture{
             //     ctxText.stroke()
             // }
             // ctxText.moveTo(0 , y)
-            // ctxText.lineTo(800, y)
+            // ctxText.lineTo(800, y)       
             // ctxText.stroke()
     
                 //  ctx.Text.stroke

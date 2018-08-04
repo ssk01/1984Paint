@@ -43,6 +43,7 @@ var initCanvasToobar = function(paint){
             ctx.fillRect( x*barw+10, y*barh+10, barw-20, barh-20);
         }
     }
+    
     var drawLine = function(x, y, click){
         if (click){
             log('click drawline', x, y)
@@ -92,8 +93,31 @@ var initCanvasToobar = function(paint){
             ctx.strokeRect( x*barw+10, y*barh+10, barw-20, barh-20);
         }
     }
+
     var selectRect = function(x, y ,click){
+        if (click){
+            // drawDashRect(ctx,x*barw+10, y*barh+10, barw-20, barh-20, 0)
+            ctx.fillStyle = 'lightblue';
+            ctx.fillRect( x*barw+10, y*barh+10, barw-20, barh-20);
+            // ctx.fillRect(x * barw, y * barh, barw-1, barh)
         
+            drawDashRect(ctx,x*barw+10, y*barh+10, barw-20, barh-20, 3)
+
+        } else {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(x * barw, y * barh, barw-1, barh)
+            drawDashRect(ctx,x*barw+10, y*barh+10, barw-20, barh-20, 0)
+        }
+    }
+    var drawPencil = function(x, y, click){
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x * barw, y * barh, barw-1, barh)
+        drawDashRect(ctx,x*barw+10, y*barh+10, barw-20, barh-20, 0)
+    }
+    var brush = function(x, y, click){
+        ctx.fillStyle = 'yellow';
+        ctx.fillRect(x * barw, y * barh, barw-1, barh)
+        drawDashRect(ctx,x*barw+10, y*barh+10, barw-20, barh-20, 0)
     }
     var canvasToolbarDraw = {
         'drawLine': drawLine,
@@ -103,12 +127,15 @@ var initCanvasToobar = function(paint){
         'linePolygon': linePolygon,
         'fillLinePolygon':fillLinePolygon,
         'selectRect': selectRect,
+        'drawPencil': drawPencil,
+        'brush': brush,
     }
     var canvasToolbarConfig = [
         ['drawLine', 'eraser'],
         ['drawRect', 'fillRect'],
         ['linePolygon', 'fillLinePolygon'],
         ['selectRect'],
+        ['drawPencil', 'brush'],
     ]
     drawLine(0, 0, true)
     drawRect(0, 1, false)
@@ -116,6 +143,8 @@ var initCanvasToobar = function(paint){
     linePolygon(0, 2, false)
     fillLinePolygon(1, 2, false)
     selectRect(0, 3, false)
+    drawPencil(0, 4, false)
+    brush(1, 4, false)
     var oldmode = 'drawLine'
     var oldxIdx = 0
     var oldyIdx = 0
